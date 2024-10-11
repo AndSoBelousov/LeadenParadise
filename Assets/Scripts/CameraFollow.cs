@@ -3,66 +3,70 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraFollow : MonoBehaviour
+namespace LeadenParadise
 {
-    [Tooltip("Объект персонажа")]
-    [SerializeField] private Transform _player;
-
-    [Tooltip("Коэффициент сглаживания движения камеры")]
-    [SerializeField, Range(1, 10)] public float _smoothing = 2.5f;
-
-    [Tooltip("Скорость скролла камеры при наведении мышки на край экрана ")]
-    [SerializeField] private float mouseScrollSpeed = 20f;
-
-    [Tooltip("Зона, в которой будет срабатывать скролл мышки")]
-    [SerializeField] private float mouseScrollZone = 30f;
-
-    private float screenWidth; 
-    private float screenHeight;
-
-    private InputHandler _input;
-    private Vector3 _offset;
-
-    private void Awake()
+    public class CameraFollow : MonoBehaviour
     {
-        _player = FindAnyObjectByType<InputHandler>().gameObject.transform;
-        _input = FindAnyObjectByType<InputHandler>();
-    }
+        [Tooltip("Объект персонажа")]
+        [SerializeField] private Transform _player;
 
-    void Start()
-    {
-        _offset = transform.position - _player.position;
-        screenWidth = Screen.width;
-        screenHeight = Screen.height;
-    }
+        [Tooltip("Коэффициент сглаживания движения камеры")]
+        [SerializeField, Range(1, 10)] public float _smoothing = 2.5f;
 
-    void LateUpdate()
-    {
-        Vector3 targetCamPos = _player.position + _offset;
-        transform.position = Vector3.Lerp(transform.position, targetCamPos, _smoothing * Time.deltaTime);
+        [Tooltip("Скорость скролла камеры при наведении мышки на край экрана ")]
+        [SerializeField] private float mouseScrollSpeed = 20f;
 
-        LookTheEdge(_input.LookInput); 
-    }
+        [Tooltip("Зона, в которой будет срабатывать скролл мышки")]
+        [SerializeField] private float mouseScrollZone = 30f;
 
-    // при наведении курсора на край экрана, камера смещается в эту сторону
-    private void LookTheEdge(Vector3 pos)
-    {
-        if (pos.x < mouseScrollZone)
+        private float screenWidth;
+        private float screenHeight;
+
+        private InputHandler _input;
+        private Vector3 _offset;
+
+        private void Awake()
         {
-            transform.Translate(Vector3.left * mouseScrollSpeed * Time.deltaTime);
-        }
-        else if (pos.x > screenWidth - mouseScrollZone)
-        {
-            transform.Translate(Vector3.right * mouseScrollSpeed * Time.deltaTime);
+            _player = FindAnyObjectByType<InputHandler>().gameObject.transform;
+            _input = FindAnyObjectByType<InputHandler>();
         }
 
-        if (pos.y < mouseScrollZone)
+        void Start()
         {
-            transform.Translate(Vector3.back * mouseScrollSpeed * Time.deltaTime);
+            _offset = transform.position - _player.position;
+            screenWidth = Screen.width;
+            screenHeight = Screen.height;
         }
-        else if (pos.y > screenHeight - mouseScrollZone)
+
+        void LateUpdate()
         {
-            transform.Translate(Vector3.forward * mouseScrollSpeed * Time.deltaTime);
+            Vector3 targetCamPos = _player.position + _offset;
+            transform.position = Vector3.Lerp(transform.position, targetCamPos, _smoothing * Time.deltaTime);
+
+            LookTheEdge(_input.LookInput);
+        }
+
+        // при наведении курсора на край экрана, камера смещается в эту сторону
+        private void LookTheEdge(Vector3 pos)
+        {
+            if (pos.x < mouseScrollZone)
+            {
+                transform.Translate(Vector3.left * mouseScrollSpeed * Time.deltaTime);
+            }
+            else if (pos.x > screenWidth - mouseScrollZone)
+            {
+                transform.Translate(Vector3.right * mouseScrollSpeed * Time.deltaTime);
+            }
+
+            if (pos.y < mouseScrollZone)
+            {
+                transform.Translate(Vector3.back * mouseScrollSpeed * Time.deltaTime);
+            }
+            else if (pos.y > screenHeight - mouseScrollZone)
+            {
+                transform.Translate(Vector3.forward * mouseScrollSpeed * Time.deltaTime);
+            }
         }
     }
 }
+

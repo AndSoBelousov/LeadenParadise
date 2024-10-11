@@ -10,6 +10,7 @@ namespace LeadenParadise.Input
     {
         [SerializeField] private Camera mainCamera;
 
+        private Ray ray;
         private InputHandler _inputHandler;
 
         private void Awake()
@@ -23,13 +24,13 @@ namespace LeadenParadise.Input
             Vector2 lookInput = _inputHandler.LookInput;
             if (lookInput.sqrMagnitude > 0.1f)
             {
-                RotateTowardsMouse();
+                RotateTowardsMouse(_inputHandler.LookInput);
             }
         }
 
-        private void RotateTowardsMouse()
+        private void RotateTowardsMouse(Vector2 input)
         {
-            Ray ray = mainCamera.ScreenPointToRay(_inputHandler.LookInput);
+            ray = mainCamera.ScreenPointToRay(input);
             Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
 
             if (groundPlane.Raycast(ray, out float enter))
@@ -40,6 +41,20 @@ namespace LeadenParadise.Input
                 Quaternion rotation = Quaternion.LookRotation(direction);
                 transform.rotation = rotation;
             }
+        }
+
+        private void AimAtMouse(Vector2 input)
+        {
+            
+
+            //if (Physics.Raycast(ray, out RaycastHit hit))
+            //{
+            //    Vector3 targetDirection = hit.point - upperBody.position;
+            //    targetDirection.y = 0; // Ограничиваем поворот по вертикали
+            //    Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+
+            //    // Плавно вращаем верхнюю часть
+            //    upperBody.rotation = Quaternion.Slerp(upperBody.rotation, targetRotation, Time.deltaTime * 5f);
         }
     }
 }
