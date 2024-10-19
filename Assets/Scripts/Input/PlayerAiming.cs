@@ -2,6 +2,7 @@ using LeadenParadise.Input;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 
 namespace LeadenParadise.Input
@@ -9,10 +10,16 @@ namespace LeadenParadise.Input
     public class PlayerAiming : MonoBehaviour
     {
         [SerializeField] private Camera mainCamera;
+        [SerializeField] private float coneAngle = 30f; // Угол конуса
+        [SerializeField] private float coneDistance = 5f; // Дистанция конуса
+
+        [SerializeField] private float rotationSpeed = 5f; // Скорость вращения
+        [SerializeField] private Transform _target;
 
         private Ray ray;
         private InputHandler _inputHandler;
 
+        private Vector2 lookInput;
         private void Awake()
         {
             _inputHandler = GetComponent<InputHandler>();
@@ -21,11 +28,13 @@ namespace LeadenParadise.Input
 
         private void Update()
         {
-            Vector2 lookInput = _inputHandler.LookInput;
+            lookInput = _inputHandler.LookInput;
             if (lookInput.sqrMagnitude > 0.1f)
             {
                 RotateTowardsMouse(_inputHandler.LookInput);
             }
+
+
         }
 
         private void RotateTowardsMouse(Vector2 input)
@@ -36,25 +45,44 @@ namespace LeadenParadise.Input
             if (groundPlane.Raycast(ray, out float enter))
             {
                 Vector3 hitPoint = ray.GetPoint(enter);
+                _target.position = hitPoint;
                 Vector3 direction = (hitPoint - transform.position).normalized;
-                direction.y = 0; // Убираем влияние на вращение по оси Y
-                Quaternion rotation = Quaternion.LookRotation(direction);
-                transform.rotation = rotation;
+                if (!IsPointWithinCone(hitPoint, transform.position, transform.forward, coneAngle))
+                {
+                    direction.y = 0; // Убираем влияние на вращение по оси Y
+                    Quaternion targetRotation = Quaternion.LookRotation(direction);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+                }
             }
+                    
+            
         }
 
-        private void AimAtMouse(Vector2 input)
+
+        private bool IsPointWithinCone(Vector3 point, Vector3 coneOrigin, Vector3 coneDirection, float coneAngle)
         {
-            
 
-            //if (Physics.Raycast(ray, out RaycastHit hit))
-            //{
-            //    Vector3 targetDirection = hit.point - upperBody.position;
-            //    targetDirection.y = 0; // Ограничиваем поворот по вертикали
-            //    Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+            // Проверяем угол
+            float angle = Vector3.Angle(coneDirection, (point - coneOrigin).normalized);
+            Debug.Log("angle: " + angle);
+            Debug.Log("angle: " + coneAngle);
+            return angle < coneAngle;
+        }
 
-            //    // Плавно вращаем верхнюю часть
-            //    upperBody.rotation = Quaternion.Slerp(upperBody.rotation, targetRotation, Time.deltaTime * 5f);
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(transform.position, transform.position + transform.forward * coneDistance);
+
+            Vector3 rightBoundary = Quaternion.Euler(0, coneAngle, 0) * transform.forward * coneDistance;
+            Vector3 leftBoundary = Quaternion.Euler(0, -coneAngle, 0) * transform.forward * coneDistance;
+
+            Gizmos.DrawLine(transform.position, transform.position + rightBoundary);
+            Gizmos.DrawLine(transform.position, transform.position + leftBoundary);
+
+            // Отрисовка конуса
+            Gizmos.DrawWireSphere(transform.position + transform.forward * coneDistance, 0.1f);
         }
     }
 }

@@ -8,8 +8,11 @@ namespace LeadenParadise
     [RequireComponent(typeof(Animator))]
     public class PlayerAnimationControl : MonoBehaviour
     {
+        
 
         private Animator _animator;
+
+        RaycastHit hit;
 
         private void Awake()
         {
@@ -20,6 +23,9 @@ namespace LeadenParadise
             _animator.SetFloat("Sideways", direction.x);
             _animator.SetFloat("MoveForward", direction.z);
         }
+        
+
+
     }
 }
 
