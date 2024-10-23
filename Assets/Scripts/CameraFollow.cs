@@ -7,8 +7,8 @@ namespace LeadenParadise
 {
     public class CameraFollow : MonoBehaviour
     {
-        [Tooltip("Объект персонажа")]
-        [SerializeField] private Transform _player;
+
+        [SerializeField] private Transform _cameraTarget;
 
         [Tooltip("Коэффициент сглаживания движения камеры")]
         [SerializeField, Range(1, 10)] public float _smoothing = 2.5f;
@@ -27,20 +27,20 @@ namespace LeadenParadise
 
         private void Awake()
         {
-            _player = FindAnyObjectByType<InputHandler>().gameObject.transform;
+            _cameraTarget = FindAnyObjectByType<CameraTarget>().gameObject.transform;
             _input = FindAnyObjectByType<InputHandler>();
         }
 
         void Start()
         {
-            _offset = transform.position - _player.position;
+            _offset = transform.position - _cameraTarget.position;
             screenWidth = Screen.width;
             screenHeight = Screen.height;
         }
 
         void LateUpdate()
         {
-            Vector3 targetCamPos = _player.position + _offset;
+            Vector3 targetCamPos = _cameraTarget.position + _offset;
             transform.position = Vector3.Lerp(transform.position, targetCamPos, _smoothing * Time.deltaTime);
 
             LookTheEdge(_input.LookInput);
@@ -69,4 +69,5 @@ namespace LeadenParadise
         }
     }
 }
+
 

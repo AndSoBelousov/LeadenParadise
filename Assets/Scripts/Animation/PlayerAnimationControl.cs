@@ -23,7 +23,7 @@ namespace LeadenParadise
             _animator.SetFloat("Sideways", direction.x);
             _animator.SetFloat("MoveForward", direction.z);
         }
-        
+      
 
 
     }

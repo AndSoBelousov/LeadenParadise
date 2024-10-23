@@ -53,6 +53,24 @@ public partial class @CustomController: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TakeAim"",
+                    ""type"": ""Button"",
+                    ""id"": ""1c6df550-ca63-44f3-a8ac-f1934831626d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Shot"",
+                    ""type"": ""Button"",
+                    ""id"": ""21956cf1-1daa-4d4c-8103-ede9097fe953"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -132,6 +150,28 @@ public partial class @CustomController: IInputActionCollection2, IDisposable
                     ""action"": ""Sprint"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2d022936-aec4-4d2c-80c6-042361935c10"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TakeAim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c55197bd-ef86-422b-b7b5-859906b211c4"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -143,6 +183,8 @@ public partial class @CustomController: IInputActionCollection2, IDisposable
         m_TopViewControl_Move = m_TopViewControl.FindAction("Move", throwIfNotFound: true);
         m_TopViewControl_Look = m_TopViewControl.FindAction("Look", throwIfNotFound: true);
         m_TopViewControl_Sprint = m_TopViewControl.FindAction("Sprint", throwIfNotFound: true);
+        m_TopViewControl_TakeAim = m_TopViewControl.FindAction("TakeAim", throwIfNotFound: true);
+        m_TopViewControl_Shot = m_TopViewControl.FindAction("Shot", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -207,6 +249,8 @@ public partial class @CustomController: IInputActionCollection2, IDisposable
     private readonly InputAction m_TopViewControl_Move;
     private readonly InputAction m_TopViewControl_Look;
     private readonly InputAction m_TopViewControl_Sprint;
+    private readonly InputAction m_TopViewControl_TakeAim;
+    private readonly InputAction m_TopViewControl_Shot;
     public struct TopViewControlActions
     {
         private @CustomController m_Wrapper;
@@ -214,6 +258,8 @@ public partial class @CustomController: IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_TopViewControl_Move;
         public InputAction @Look => m_Wrapper.m_TopViewControl_Look;
         public InputAction @Sprint => m_Wrapper.m_TopViewControl_Sprint;
+        public InputAction @TakeAim => m_Wrapper.m_TopViewControl_TakeAim;
+        public InputAction @Shot => m_Wrapper.m_TopViewControl_Shot;
         public InputActionMap Get() { return m_Wrapper.m_TopViewControl; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -232,6 +278,12 @@ public partial class @CustomController: IInputActionCollection2, IDisposable
             @Sprint.started += instance.OnSprint;
             @Sprint.performed += instance.OnSprint;
             @Sprint.canceled += instance.OnSprint;
+            @TakeAim.started += instance.OnTakeAim;
+            @TakeAim.performed += instance.OnTakeAim;
+            @TakeAim.canceled += instance.OnTakeAim;
+            @Shot.started += instance.OnShot;
+            @Shot.performed += instance.OnShot;
+            @Shot.canceled += instance.OnShot;
         }
 
         private void UnregisterCallbacks(ITopViewControlActions instance)
@@ -245,6 +297,12 @@ public partial class @CustomController: IInputActionCollection2, IDisposable
             @Sprint.started -= instance.OnSprint;
             @Sprint.performed -= instance.OnSprint;
             @Sprint.canceled -= instance.OnSprint;
+            @TakeAim.started -= instance.OnTakeAim;
+            @TakeAim.performed -= instance.OnTakeAim;
+            @TakeAim.canceled -= instance.OnTakeAim;
+            @Shot.started -= instance.OnShot;
+            @Shot.performed -= instance.OnShot;
+            @Shot.canceled -= instance.OnShot;
         }
 
         public void RemoveCallbacks(ITopViewControlActions instance)
@@ -267,5 +325,7 @@ public partial class @CustomController: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
+        void OnTakeAim(InputAction.CallbackContext context);
+        void OnShot(InputAction.CallbackContext context);
     }
 }

@@ -13,18 +13,24 @@ namespace LeadenParadise.Input
         [SerializeField] private float coneAngle = 30f; // Угол конуса
         [SerializeField] private float coneDistance = 5f; // Дистанция конуса
 
-        [SerializeField] private float rotationSpeed = 5f; // Скорость вращения
+        [SerializeField] private float _rotationSpeed = 5f; // Скорость вращения
         [SerializeField] private Transform _target;
 
         private Ray ray;
         private InputHandler _inputHandler;
-
+        private PlayerAnimationControl _animation;
         private Vector2 lookInput;
+
+        private WeaponController _weaponController;
+
         private void Awake()
         {
             _inputHandler = GetComponent<InputHandler>();
-            mainCamera = Camera.main;
+            mainCamera = Camera.allCameras[0]; 
+            _animation = GetComponent<PlayerAnimationControl>();
+            _weaponController = FindFirstObjectByType<WeaponController>();
         }
+    
 
         private void Update()
         {
@@ -33,8 +39,6 @@ namespace LeadenParadise.Input
             {
                 RotateTowardsMouse(_inputHandler.LookInput);
             }
-
-
         }
 
         private void RotateTowardsMouse(Vector2 input)
@@ -51,11 +55,14 @@ namespace LeadenParadise.Input
                 {
                     direction.y = 0; // Убираем влияние на вращение по оси Y
                     Quaternion targetRotation = Quaternion.LookRotation(direction);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
+
                 }
+                
             }
-                    
-            
+
+        
+
         }
 
 
@@ -64,8 +71,8 @@ namespace LeadenParadise.Input
 
             // Проверяем угол
             float angle = Vector3.Angle(coneDirection, (point - coneOrigin).normalized);
-            Debug.Log("angle: " + angle);
-            Debug.Log("angle: " + coneAngle);
+            //Debug.Log("angle: " + angle);
+            //Debug.Log("angle: " + coneAngle);
             return angle < coneAngle;
         }
 

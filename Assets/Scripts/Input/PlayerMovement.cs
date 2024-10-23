@@ -29,6 +29,9 @@ namespace LeadenParadise.Input
                 return localVelocity.normalized;
             }
         }
+       
+
+
         private void Awake()
         {
             _rb = GetComponent<Rigidbody>();
@@ -44,6 +47,8 @@ namespace LeadenParadise.Input
         {
             Movement(_inputHandler.MoveInput);
             _animation.PlayerMovementAnimation(LocalMovementDirection);
+            //Debug.Log(LocalMovementDirection);
+
         }
 
         private void Movement(Vector2 moveDirection)
