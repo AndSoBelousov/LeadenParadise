@@ -2,6 +2,7 @@ using LeadenParadise.Input;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 
 namespace LeadenParadise
@@ -10,40 +11,76 @@ namespace LeadenParadise
     {
         [SerializeField]
         private float maxDistance = 30f;
-        [SerializeField]
-        private GameObject shutter; // затвор 
+
 
         [SerializeField]
         private GameObject _bullet;
         [SerializeField]
         private GameObject _shellCasing;
-        [SerializeField]
-        private GameObject[] _pistolClip;
+        private GameObject[] _pistolClip;// todo
 
-        private Transform _shutterPosition;
-        private Transform _shutterTargetPosition;
+
+        [SerializeField]
+        private Transform CacheOfCasings;
+        [SerializeField]
+        private GameObject[] _spentCartridges = new GameObject[15];
+        [SerializeField]
+        private int _currentSpentCartridg = 0;
 
         public float moveDuration = 0.5f; // Время перемещения
-        
 
+        private PistolAnimationController _pistolAnimation;
+
+        private void Awake()
+        {
+            _pistolAnimation  = FindFirstObjectByType<PistolAnimationController>();
+        }
         private void Start()
         {
-            if (shutter != null) _shutterPosition = shutter.transform;
-            _shutterTargetPosition = _shutterPosition;
-            _shutterTargetPosition.position += new Vector3(0f, 0f, 0.1f);
 
+            for(int i = 0;  i < _spentCartridges.Length; i++)
+            {
+                GameObject obj = Instantiate(_shellCasing, transform.position , transform.rotation);
+                obj.transform.SetParent(CacheOfCasings.transform, false);
+                obj.SetActive(false);
+                _spentCartridges[i] = obj;
+            }
+        }
+
+        private void CachingOfCasings()
+        {
+            if (_spentCartridges[_currentSpentCartridg].activeSelf)
+            {
+                _spentCartridges[_currentSpentCartridg].SetActive(false);
+                _spentCartridges[_currentSpentCartridg].transform.position = transform.position;
+            }
+            _spentCartridges[_currentSpentCartridg].transform.position = transform.position;
+            _spentCartridges[_currentSpentCartridg].transform.rotation = transform.rotation;
+            _spentCartridges[_currentSpentCartridg].SetActive(true);
+
+            _currentSpentCartridg++;
+            if (_currentSpentCartridg == _spentCartridges.Length) 
+                _currentSpentCartridg = 0;
 
         }
         private void PistolShotStart()
         {
-            GameObject bullet = Instantiate(_bullet);
-            bullet.transform.localPosition = transform.position;
-            bullet.transform.localRotation = transform.rotation;
+            _pistolAnimation.TriggerOfTheShotAnim();
 
-            //Instantiate(_bullet,transform.position, transform.localRotation);
-            Instantiate(_shellCasing, transform.position + new Vector3(0f,0f,-0.2f), transform.localRotation);
+            CachingOfCasings();
+            //Instantiate(_shellCasing, transform.position + new Vector3(0f,0f,-0.2f), transform.localRotation);
+
+            //EditorApplication.isPaused = true;
         }
        
+        private void OnEnable()
+        {
+            InputHandler.OnShotPressed += PistolShotStart;
+        }
+        private void OnDisable()
+        {
+            InputHandler.OnShotPressed -= PistolShotStart;
+        }
 
         private void OnDrawGizmos()
         {
@@ -69,14 +106,6 @@ namespace LeadenParadise
             }
         }
 
-        private void OnEnable()
-        {
-            InputHandler.OnShotPressed += PistolShotStart;
-        }
-        private void OnDisable()
-        {
-            InputHandler.OnShotPressed -= PistolShotStart;
-        }
     }
 }
 
