@@ -76,7 +76,7 @@ namespace LeadenParadise.Animation
 
 
             SetHandIK(AvatarIKGoal.RightHand);
-            SetHandIK(AvatarIKGoal.RightHand);
+            //SetHandIK(AvatarIKGoal.RightHand);
         }
 
         private void SetHandIK(AvatarIKGoal hand)

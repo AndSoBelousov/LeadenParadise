@@ -54,7 +54,7 @@ namespace LeadenParadise
                 _spentCartridges[_currentSpentCartridg].SetActive(false);
                 _spentCartridges[_currentSpentCartridg].transform.position = transform.position;
             }
-            _spentCartridges[_currentSpentCartridg].transform.position = transform.position;
+            _spentCartridges[_currentSpentCartridg].transform.position = transform.position + new Vector3(0f,0.1f,0f);
             _spentCartridges[_currentSpentCartridg].transform.rotation = transform.rotation;
             _spentCartridges[_currentSpentCartridg].SetActive(true);
 
