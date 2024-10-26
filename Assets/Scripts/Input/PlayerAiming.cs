@@ -43,25 +43,6 @@ namespace LeadenParadise.Input
 
         private void RotateTowardsMouse(Vector2 input)
         {
-            //ray = mainCamera.ScreenPointToRay(input);
-            //Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
-
-            //if (groundPlane.Raycast(ray, out float enter))
-            //{
-            //    Vector3 hitPoint = ray.GetPoint(enter);
-            //    _target.position = hitPoint;
-            //    Vector3 direction = (hitPoint - transform.position).normalized;
-            //    if (!IsPointWithinCone(hitPoint, transform.position, transform.forward, coneAngle))
-            //    {
-            //        direction.y = 0; // Убираем влияние на вращение по оси Y
-            //        Quaternion targetRotation = Quaternion.LookRotation(direction);
-            //        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
-
-            //    }
-
-            //}
-
-
             Ray ray = mainCamera.ScreenPointToRay(input);
             RaycastHit hit;
 
@@ -75,14 +56,8 @@ namespace LeadenParadise.Input
                     direction.y = 0; // Убираем влияние на вращение по оси Y
                     Quaternion targetRotation = Quaternion.LookRotation(direction);
                     transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
-
                 }
-
             }
-
-
-
-
 
         }
 
@@ -92,8 +67,6 @@ namespace LeadenParadise.Input
 
             // Проверяем угол
             float angle = Vector3.Angle(coneDirection, (point - coneOrigin).normalized);
-            //Debug.Log("angle: " + angle);
-            //Debug.Log("angle: " + coneAngle);
             return angle < coneAngle;
         }
 

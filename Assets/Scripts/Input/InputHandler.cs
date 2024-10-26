@@ -44,13 +44,10 @@ namespace LeadenParadise.Input
 
         private void OnShot(InputAction.CallbackContext context)
         {
-            // Проверяем, что кнопка только что нажата
             if (!_shotButtonPressed)
             {
-                // Устанавливаем флаг, чтобы избежать повторного вызова
-                _shotButtonPressed = true;
 
-                // Вызываем событие OnJumpPressed, если оно подписано
+                _shotButtonPressed = true;
                 OnShotPressed?.Invoke();
             }
         }

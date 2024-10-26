@@ -21,7 +21,7 @@ namespace LeadenParadise
 
 
         [SerializeField]
-        private Transform CacheOfCasings;
+        private Transform _cacheOfCasings;
         [SerializeField]
         private GameObject[] _spentCartridges = new GameObject[15];
         [SerializeField]
@@ -34,6 +34,7 @@ namespace LeadenParadise
         private void Awake()
         {
             _pistolAnimation  = FindFirstObjectByType<PistolAnimationController>();
+            //_cacheOfCasings = FindFirstObjectByType<>();
         }
         private void Start()
         {
@@ -41,7 +42,7 @@ namespace LeadenParadise
             for(int i = 0;  i < _spentCartridges.Length; i++)
             {
                 GameObject obj = Instantiate(_shellCasing, transform.position , transform.rotation);
-                obj.transform.SetParent(CacheOfCasings.transform, false);
+                obj.transform.SetParent(_cacheOfCasings.transform, false);
                 obj.SetActive(false);
                 _spentCartridges[i] = obj;
             }
@@ -68,11 +69,39 @@ namespace LeadenParadise
             _pistolAnimation.TriggerOfTheShotAnim();
 
             CachingOfCasings();
-            //Instantiate(_shellCasing, transform.position + new Vector3(0f,0f,-0.2f), transform.localRotation);
+
+            Vector3 direction = transform.forward;
+            RaycastHit hit; 
+            if(Physics.Raycast(transform.position, direction, out hit, maxDistance))
+            {
+                StartCoroutine(SphereIndicator(hit.point));
+
+                //GameObject hitObject = hit.transform.gameObject; // получаем объект в который попал луч
+                //ReactiveTarget target = hitObject.GetComponent<ReactiveTarget>();
+
+                //if (target != null)
+                //{
+                //    target.ReactToHit();                //вызов метода при поподании
+                //    Debug.Log("Target hit");
+                //}
+                //else
+                //{
+                //    StartCoroutine(SphereIndicator(hit.point));
+                //}
+            }
 
             //EditorApplication.isPaused = true;
         }
-       
+
+        private IEnumerator SphereIndicator(Vector3 pos) //////// ИМЕНИТЬ!!!! TODO
+        {
+            GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere); 
+            sphere.transform.position = pos; 
+            sphere.transform.localScale= Vector3.one * 0.1f;
+            yield return new WaitForSeconds(1);                                
+            Destroy(sphere);                                                
+        }
+
         private void OnEnable()
         {
             InputHandler.OnShotPressed += PistolShotStart;
@@ -85,11 +114,9 @@ namespace LeadenParadise
         private void OnDrawGizmos()
         {
             Vector3 direction = transform.forward;
-
-            // Переменная для хранения информации о столкновении
             RaycastHit hit;
 
-            // Бросаем луч
+
             if (Physics.Raycast(transform.position, direction, out hit, maxDistance))
             {
                 // Если луч что-то задевает

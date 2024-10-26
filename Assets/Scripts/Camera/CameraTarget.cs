@@ -13,20 +13,7 @@ public class CameraTarget : MonoBehaviour
     [SerializeField, Range(1, 10)]
     private float _additionalOffset = 5;
 
-    //private Vector3 _deltaOffset;
-    //[SerializeField]
-    //private bool _isLooking = false;
-
-    //private void Toggle()
-    //{
-    //    _isLooking = !_isLooking;
-    //}
-
-    //public void LookOverEdge(bool deltaBool)
-    //{
-    //    _deltaOffset = Vector3.fwd * _additionalOffset;
-    //    _isLooking = deltaBool;
-    //}
+    
     private void LateUpdate()
     {
         transform.position = Vector3.Lerp(transform.position, _standartPositionCameraTarget.position, _smoothing * Time.deltaTime);
